@@ -4,10 +4,13 @@ var context = canvas.getContext('2d');
 var paddleWidth = 5;
 var paddleHeight = 20;
 var paddleColor = 'white';
+var playerSpeed = 2.5;
+var AISpeed = 1;
 
 var ballWidth = 5;
 var ballHeight = 5;
 var ballColor = 'yellow';
+var ballSpeed = 4;
 
 var scoreboardPadding = 20;
 
@@ -18,28 +21,28 @@ function Player()
     this.score = 0;
 }
 
-function Paddle(x, y, w, h, color)
+function Paddle(x, y, w, h, color, speed)
 {
     this.x = x;
     this.y = y;
     this.width = w;
     this.height = h;
     this.color = color;
+    this.speed = speed;
 
-    this.speed = 2.5; // how fast the paddle moves
     this.dx = 0; // this should always be zero
     this.dy = 0;
 }
 
-function Ball(x, y, w, h, color)
+function Ball(x, y, w, h, color, speed)
 {
     this.x = x;
     this.y = y;
     this.width = w;
     this.height = h;
     this.color = color;
+    this.speed = speed;
 
-    this.speed = 2.5; // how fast the ball moves
     this.dx = 0;
     this.dy = 0;
 }
@@ -125,7 +128,7 @@ function randomizeDirection(ball)
     // Force ball to move in direction if dx is 0.
     if (ball.dx == 0)
     {
-        ball.dx = 1;
+        ball.dx = -1;
     }
 }
 
@@ -266,9 +269,9 @@ function loop()
 
 var player1 = new Player();
 var player2 = new Player();
-var leftPaddle = new Paddle(0 + paddleWidth, canvas.height / 2 - paddleHeight / 2, paddleWidth, paddleHeight, paddleColor)
-var rightPaddle = new Paddle(canvas.width - paddleWidth * 2, canvas.height / 2 - paddleHeight / 2, paddleWidth, paddleHeight, paddleColor);
-var ball = new Ball(canvas.width / 2 - ballWidth / 2, canvas.height / 2 - ballHeight / 2, ballWidth, ballHeight, ballColor);
+var leftPaddle = new Paddle(0 + paddleWidth, canvas.height / 2 - paddleHeight / 2, paddleWidth, paddleHeight, paddleColor, playerSpeed)
+var rightPaddle = new Paddle(canvas.width - paddleWidth * 2, canvas.height / 2 - paddleHeight / 2, paddleWidth, paddleHeight, paddleColor, AISpeed);
+var ball = new Ball(canvas.width / 2 - ballWidth / 2, canvas.height / 2 - ballHeight / 2, ballWidth, ballHeight, ballColor, ballSpeed);
 
 reset();
 requestAnimationFrame(loop);
