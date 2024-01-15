@@ -2,15 +2,23 @@
 
 :root {
     --bg-primary-color: #1E1E2C;
-    --accent-primary-color: #b80046;
+    --accent-primary-color: #b60024;
     --font-primary-color: white;
     --font-secondary-color: #E4E6EB;
+    --font-tertiary-color: #78709b;
+    --padding: 15px;
+    --header-font: 36px;
 }
 
 html, body {
     background-color: var(--bg-primary-color);
     margin: 0;
     padding: 0;
+}
+
+canvas {
+    border: 1px solid #2b2833;
+    background-color: black;
 }
 
 .header
@@ -22,22 +30,70 @@ html, body {
     padding: 15px;
 }
 
+.game
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding);
+}
+
 h1
 {
     font-family: 'Roboto Mono', monospace;
+    font-size: var(--header-font);
     color: var(--font-primary-color);
+    padding-left: var(--padding);
+    padding-right: var(--padding);
 }
 
 h2
 {
     font-family: 'Roboto Mono', monospace;
-    font-size: 18px;
+    font-size: calc(var(--header-font) - 10px);
     color: var(--font-secondary-color);
+    padding-left: var(--padding);
+    padding-right: var(--padding);
+}
+
+h3
+{
+    font-family: 'Roboto Mono', monospace;
+    font-size: calc(var(--header-font) - 12px);
+    color: var(--font-secondary-color);
+    padding-left: var(--padding);
+    padding-right: var(--padding);
+}
+
+h4
+{
+    font-family: 'Roboto Mono', monospace;
+    font-size: calc(var(--header-font) - 18px);
+    color: var(--font-secondary-color);
+    padding-left: var(--padding);
+    padding-right: var(--padding);
+}
+
+h5
+{
+    font-family: 'Roboto Mono', monospace;
+    font-size: calc(var(--header-font) - 20px);
+    color: var(--font-secondary-color);
+    padding-left: var(--padding);
+    padding-right: var(--padding);
+}
+
+a
+{
+    color: cyan;
 }
 
 p
 {
     font-family: 'Roboto Mono', monospace;
+    font-size: calc(var(--header-font) - 22px);
     color: var(--font-primary-color);
     padding-left: 20px;
+    padding-right: 20px;
+    line-height: normal;
 }
