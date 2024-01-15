@@ -11,6 +11,8 @@ var ballColor = 'yellow';
 
 var scoreboardPadding = 20;
 
+var startTime = 0;
+
 function Player()
 {
     this.score = 0;
@@ -24,7 +26,7 @@ function Paddle(x, y, w, h, color)
     this.height = h;
     this.color = color;
 
-    this.speed = 1; // how fast the paddle moves
+    this.speed = 2.5; // how fast the paddle moves
     this.dx = 0; // this should always be zero
     this.dy = 0;
 }
@@ -37,7 +39,7 @@ function Ball(x, y, w, h, color)
     this.height = h;
     this.color = color;
 
-    this.speed = 10; // how fast the ball moves
+    this.speed = 2.5; // how fast the ball moves
     this.dx = 0;
     this.dy = 0;
 }
@@ -79,6 +81,9 @@ function reset()
     resetPaddles(leftPaddle, rightPaddle);
     resetBall(ball);
     randomizeDirection(ball); 
+
+    startTime = performance.now();
+    endTime = 0;
 }
 
 function drawPaddle(paddle)
@@ -126,8 +131,8 @@ function randomizeDirection(ball)
 
 function updateBallMovement(ball)
 {
-    ball.x += ball.dx;
-    ball.y += ball.dy;
+    ball.x += ball.speed * ball.dx;
+    ball.y += ball.speed * ball.dy;
 }
 
 function updatePaddleMovement(paddle)
@@ -176,15 +181,17 @@ function checkPaddleBallCollision(paddle, ball)
 {
     if (paddle.x < ball.x + ball.width && paddle.x + paddle.width> ball.x && paddle.y < ball.y + ball.height && paddle.y + paddle.height > ball.y)
     {
-        ball.dx *= -1;
-        if (ball.dx > 0)
+        if (ball.x < canvas.width / 2)
         {
-            ball.x = paddle.x + paddle.width;
+            ball.dx = Math.cos(((paddle.y + (paddle.height / 2) - ball.y) / (paddle.height / 2)) * (Math.PI / 8));
+            ball.dy = -Math.sin(((paddle.y + (paddle.height / 2) - ball.y) / (paddle.height / 2)) * (Math.PI / 8));
         }
         else
         {
-            ball.x = paddle.x - ball.width;
+            ball.dx = Math.cos(((paddle.y + (paddle.height / 2) - ball.y) / (paddle.height / 2)) * (Math.PI / 8)) * -1;
+            ball.dy = Math.sin(((paddle.y + (paddle.height / 2) - ball.y) / (paddle.height / 2)) * (Math.PI / 8)) * -1;
         }
+        
     }
 }
 
@@ -208,9 +215,9 @@ function checkPlayerInput(paddle)
     });
 }
 
-function updateAIPosition(paddle, ball)
+function getAIPosition(paddle, ball)
 {
-    if (paddle.y > ball.y)
+    if (paddle.y + paddle.height / 2 > ball.y)
     {
         paddle.dy = -paddle.speed;
     }
@@ -231,7 +238,7 @@ function loop()
     checkPaddleWallCollision(leftPaddle);
     updatePaddleMovement(leftPaddle);
 
-    updateAIPosition(rightPaddle, ball);
+    getAIPosition(rightPaddle, ball);
     checkPaddleWallCollision(rightPaddle);
     updatePaddleMovement(rightPaddle);
 
