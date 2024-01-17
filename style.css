@@ -88,12 +88,12 @@ a
     color: cyan;
 }
 
-p
+p, li
 {
     font-family: 'Roboto Mono', monospace;
     font-size: calc(var(--header-font) - 22px);
     color: var(--font-primary-color);
     padding-left: 20px;
     padding-right: 20px;
-    line-height: normal;
+    line-height: 1.5;
 }
