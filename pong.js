@@ -11,6 +11,9 @@ var paddles = null;
 var players = null;
 var balls = null;
 
+// Controls the game loop
+var paused = false;
+
 // Tuning Parameters
 var scoreboardPadding = 20; // Space between the net and the text that shows the score
 
@@ -20,13 +23,13 @@ var paddleColor = '#FFFFFF'; // #FFFFFF is white in hexadecimal (FF = 255)
 
 var ballWidth = 5;
 var ballHeight = 5; // Could be collapsed into one variable, but maybe we want oval balls. Never know.
-var ballColors = ['#FF00FF', '#1C60FF', '#00FF40', '#6FFF00', '#FFFF00', '#FF8C00', '#FF0000']; // Magenta, blue, green, yellow-green, yellow, orange, and red, respectively.
+var ballColors = ['#FF00FF', '#2EAFFF', '#6FFF00', '#FFFF00', '#FF8C00', '#FF0000']; // Since I used pop, I have to manually reset the values // Magenta, blue, green, yellow, orange, and red, respectively.
 
 var pcSpeed = 5; // How fast the human-controlled paddle moves
-var aiSpeed = 3.5; // How fast the computer-controlled paddle moves
-var ballSpeed = 1.8;
+var aiSpeed = 4; // How fast the computer-controlled paddle moves
+var ballSpeed = 2.1;
 
-var ballDampener = 0.85; // Speed reduction (so the AI can keep up with multiple balls)
+var ballDampener = 0.9; // Speed reduction (so the AI can keep up with multiple balls)
 
 var maxNumberOfBalls = ballColors.length; // Must be equal or less than the value of ballColors.length (otherwise there will be an error).
 
@@ -53,7 +56,7 @@ function Paddle(x, y, w, h, color, speed)
     this.startingPositionY = y;
     this.dx = 0; // dx = horizontal vector
     this.dy = 0; // dy = vertical vector
-    this.targetRange = this.height; // how close the paddle should be relative to the ball --> this controls the AI's precision
+    this.targetRange = this.height / 2; // how close the paddle should be relative to the ball --> this controls the AI's precision
 }
 
 function Ball(x, y, w, h, color, speed)
@@ -238,8 +241,7 @@ function reset()
 
 function resetBallParameters()
 {
-    ballColors = ['#FF00FF', '#2EAFFF', '#00FFB7', '#6FFF00', '#FFFF00', '#FF8C00', '#FF0000']; // Since I used pop, I have to manually reset the values
-    ballDampener = 0.85; // Speed reduction (so the AI can keep up with multiple balls)
+    ballColors = ['#FF00FF', '#2EAFFF', '#6FFF00', '#FFFF00', '#FF8C00', '#FF0000']; // Since I used pop, I have to manually reset the values
 }
 
 function resetObject(object) 
@@ -297,27 +299,37 @@ function updateScreen() // Refreshes the screen.
 }
 
 
-// Player-Related Functions
+// Input Functions
 function checkPlayerInput(paddle) // This looks for input from a keyboard.
 {
     document.addEventListener('keyup', (e) => {
-        if (e.key == "w" || e.key == "ArrowUp" || e.key == "s" || e.key == "ArrowDown") // Not sure how this interfaces with non-QWERTY keyboard layouts.
+        if (e.key === "w" || e.key === "ArrowUp" || e.key === "s" || e.key === "ArrowDown") // Not sure how this interfaces with non-QWERTY keyboard layouts.
         {
             paddle.dy = 0;
         }
     });
     document.addEventListener('keydown', (e) => {
-        if (e.key == "w" || e.key == "ArrowUp")
+        if (e.key === "w" || e.key === "ArrowUp")
         {
             paddle.dy = -1;
         }
-        else if (e.key == "s" || e.key == "ArrowDown")
+        else if (e.key === "s" || e.key === "ArrowDown")
         {
             paddle.dy = 1;
         }
-        else if (e.key == "r")
+        else if (e.key === "r")
         {
             restart();
+        }
+    });
+}
+
+function checkPauseInput()
+{
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape")
+        {
+            paused = !paused;
         }
     });
 }
@@ -387,14 +399,15 @@ function adjustDifficulty(players) // This changes the game's difficulty in vari
     {
         players[1].paddle.targetRange = 2;
     }
-    if (players[1].paddle.targetRange > (players[1].paddle.height / 2) - (0.75 * balls.length))
+    if (players[1].paddle.targetRange > (players[1].paddle.height / 2) - (0.8 * balls.length))
     {
-        players[1].paddle.targetRange = (players[1].paddle.height / 2) - (0.75 * balls.length);
+        players[1].paddle.targetRange = (players[1].paddle.height / 2) - (0.8 * balls.length);
     }
 }
 
 function adjustBallSpeed(ball)
 {
+
     if (ball.speed > 1.5) // Need to introduce a speed limit.
     {
         ball.speed *= ballDampener;
@@ -407,16 +420,20 @@ function addBall()
     if (balls.length < maxNumberOfBalls)
     {
         balls.push(new Ball(canvas.width / 2 - ballWidth / 2, canvas.height / 2 - ballHeight / 2, ballWidth, ballHeight, getNextBallColor(), ballSpeed));
-        balls.forEach(adjustBallSpeed);
+        balls.forEach(adjustBallSpeed, ballDampener);
     }
 }
 
 // Game Loop
 function loop()
 {
-    updatePaddles();
-    updateBalls();
-    updateScreen();
+    checkPauseInput();
+    if (paused == false)
+    {
+        updatePaddles();
+        updateBalls();
+        updateScreen();
+    }
     requestAnimationFrame(loop);
 }
 
