@@ -388,21 +388,22 @@ function adjustDifficulty(players) // This changes the game's difficulty in vari
 
     if (players[0].score.value >= players[1].score.value) // To create the illusion of challenge, we're modifying the AI's behavior based on the player's performance. This statement checks if the player is winning against the AI or in a draw with the AI.
     {
-        players[1].paddle.targetRange -= 1 * Math.abs((players[0].score.value - players[1].score.value)); // Math.abs = absolute value.
+        players[1].paddle.targetRange *= 0.10 * Math.abs((players[0].score.value - players[1].score.value)); // Math.abs = absolute value.
     }
     else // Player is losing against AI.
     {
-        players[1].paddle.targetRange += 1 *  Math.abs((players[0].score.value - players[1].score.value));
+        players[1].paddle.targetRange *= 1.10 *  Math.abs((players[0].score.value - players[1].score.value));
     }
 
     if (players[1].paddle.targetRange < 2) // Cap values to prevent extreme behavior.
     {
         players[1].paddle.targetRange = 2;
     }
-    if (players[1].paddle.targetRange > (players[1].paddle.height / 2) - (0.8 * balls.length))
+    if (players[1].paddle.targetRange > (players[1].paddle.height / 2) - (balls.length))
     {
-        players[1].paddle.targetRange = (players[1].paddle.height / 2) - (0.8 * balls.length);
+        players[1].paddle.targetRange = (players[1].paddle.height / 2) - (balls.length);
     }
+    console.log(players[1].paddle.targetRange);
 }
 
 function adjustBallSpeed(ball)
